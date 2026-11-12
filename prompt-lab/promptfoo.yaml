@@ -1,0 +1,39 @@
+# promptfoo — compara variantes de prompt con asserts automáticos.
+# Ejecuta:  promptfoo eval -c promptfoo.yaml   &&   promptfoo view
+description: "Optimización del prompt inicial del enjambre"
+
+prompts:
+  - id: variante-A
+    raw: |
+      Eres un ingeniero senior. {{objetivo}}
+      Responde con un plan numerado y los criterios de aceptación.
+  - id: variante-B
+    raw: |
+      Contexto: proyecto de software con CHECKPOINTS estrictos (borrado lógico,
+      sin secretos en claro, criterios verificables).
+      Rol: arquitecto de software.
+      Acción: {{objetivo}}
+      Formato de salida: 1) Supuestos  2) Plan por pasos  3) Criterios de aceptación verificables.
+
+providers:
+  - id: anthropic:messages:claude-sonnet-4-6
+    config:
+      max_tokens: 1200
+
+tests:
+  - vars:
+      objetivo: "Crea el módulo de pagos con pruebas."
+    assert:
+      - type: contains
+        value: "Criterios de aceptación"
+      - type: llm-rubric
+        value: >
+          La respuesta lista supuestos explícitos, da un plan por pasos accionable
+          y define criterios de aceptación verificables. Penaliza ambigüedad.
+  - vars:
+      objetivo: "Migra la autenticación a tokens y documenta el cambio."
+    assert:
+      - type: llm-rubric
+        value: >
+          Menciona seguridad (no secretos en claro), pasos de migración reversibles
+          y un ADR/documentación. Penaliza omitir seguridad.

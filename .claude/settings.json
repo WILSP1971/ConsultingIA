@@ -1,0 +1,54 @@
+{
+  "model": "opus",
+  "permissions": {
+    "defaultMode": "bypassPermissions",
+    "allow": [
+      "Read", "Grep", "Glob", "Write", "Edit", "Bash",
+      "Bash(git add:*)", "Bash(git commit:*)", "Bash(git push:*)", "Bash(git pull:*)",
+      "Bash(git fetch:*)", "Bash(git tag:*)", "Bash(git checkout:*)", "Bash(git status:*)",
+      "Bash(git log:*)", "Bash(git diff:*)", "Bash(git merge:*)", "Bash(git switch:*)",
+      "Bash(gh release:*)", "Bash(gh run:*)", "Bash(gh pr:*)",
+      "Bash(flutter:*)", "Bash(dart:*)", "Bash(dotnet:*)",
+      "Bash(find:*)", "Bash(ls:*)", "Bash(cat:*)", "Bash(head:*)", "Bash(tail:*)",
+      "Bash(grep:*)", "Bash(rg:*)", "Bash(egrep:*)", "Bash(fgrep:*)", "Bash(wc:*)",
+      "Bash(echo:*)", "Bash(pwd)", "Bash(which:*)", "Bash(tree:*)", "Bash(stat:*)",
+      "Bash(file:*)", "Bash(sort:*)", "Bash(uniq:*)", "Bash(cut:*)", "Bash(diff:*)",
+      "Bash(realpath:*)", "Bash(basename:*)", "Bash(dirname:*)", "Bash(date:*)",
+      "Bash(env)", "Bash(printenv:*)", "Bash(du:*)", "Bash(df:*)", "Bash(sed:*)",
+      "Bash(awk:*)", "Bash(jq:*)", "Bash(test:*)", "Bash(sha256sum:*)"
+    ],
+    "ask": [],
+    "deny": []
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash .claude/hooks/banner.sh" }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "bash .claude/hooks/guard.sh" }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash .claude/hooks/notify.sh 'IRON MAN necesita tu atencion: hay algo esperando tu decision. Responde por aqui o revisa la terminal.'" }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash .claude/hooks/notify.sh 'Tarea finalizada por el enjambre'" }
+        ]
+      }
+    ]
+  }
+}
